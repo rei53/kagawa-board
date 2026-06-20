@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>掲示板</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --text: #1a1a18;
+      --text-secondary: #6b6b67;
+      --text-tertiary: #9f9f9b;
+      --border: rgba(0,0,0,0.12);
+      --border-hover: rgba(0,0,0,0.25);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --accent: #4f46e5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1e1e1c;
+        --bg-secondary: #2a2a28;
+        --text: #f0f0ee;
+        --text-secondary: #a0a09c;
+        --text-tertiary: #6a6a68;
+        --border: rgba(255,255,255,0.12);
+        --border-hover: rgba(255,255,255,0.25);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .app { max-width: 600px; margin: 0 auto; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+      padding-top: 0.5rem;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .post-form {
+      background: var(--bg);
+      border: 0.5px solid var(--border-hover);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .form-row { display: flex; gap: 8px; align-items: center; }
+
+    .form-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      min-width: 52px;
+    }
+
+    .form-input {
+      flex: 1;
+      height: 38px;
+      padding: 0 12px;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      background: var(--bg-secondary);
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input:focus { box-shadow: 0 0 0 2px rgba(79,70,229,0.2); border-color: var(--accent); }
+    .form-input::placeholder { color: var(--text-tertiary); }
+
+    textarea.form-input {
+      height: auto;
+      padding: 10px 12px;
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+
+    .submit-btn {
+      height: 40px;
+      padding: 0 20px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-end;
+      transition: opacity 0.15s;
+    }
+
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:active { transform: scale(0.97); }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .toast {
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      display: none;
+    }
+
+    .toast.ok  { background: #EAF3DE; color: #27500A; display: block; }
+    .toast.err { background: #FCEBEB; color: #A32D2D; display: block; }
+    .toast.loading { background: #E6F1FB; color: #0C447C; display: block; }
+
+    .posts-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .posts-count {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    .reload-btn {
+      height: 30px;
+      padding: 0 12px;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .reload-btn:hover { background: var(--bg); color: var(--text); }
+
+    .posts { display: flex; flex-direction: column; gap: 10px; }
+
+    .post-card {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .post-card:hover { border-color: var(--border-hover); }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .post-author {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #EEEDFE;
+      color: #4f46e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .author-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .post-time {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .post-content {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .del-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      color: var(--text-tertiary);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .del-btn:hover { background: #FCEBEB; color: #A32D2D; }
+
+    .empty {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--text-tertiary);
+      font-size: 15px;
+    }
+
+    .empty i { font-size: 32px; display: block; margin-bottom: 10px; }
+
+    .loading-wrap {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-tertiary);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="title">
+        <i class="ti ti-message-2" aria-hidden="true"></i> 掲示板
+      </div>
+    </div>
+
+    <!-- 投稿フォーム -->
+    <div class="post-form">
+      <div class="form-title">
+        <i class="ti ti-pencil" aria-hidden="true"></i> 新しい投稿
+      </div>
+      <div class="form-row">
+        <span class="form-label">名前</span>
+        <input type="text" id="post-name" class="form-input" placeholder="あなたの名前（任意）" maxlength="50" />
+      </div>
+      <div class="form-row">
+        <span class="form-label">ルーム</span>
+        <input type="text" id="post-room" class="form-input" placeholder="general" maxlength="50" value="general" />
+      </div>
+      <textarea id="post-body" class="form-input" placeholder="内容を入力してください..." maxlength="1000" rows="3"></textarea>
+      <div id="form-toast" class="toast"></div>
+      <button class="submit-btn" id="submit-btn" onclick="submitPost()">
+        <i class="ti ti-send" aria-hidden="true"></i> 投稿する
+      </button>
+    </div>
+
+    <!-- 投稿一覧 -->
+    <div class="posts-header">
+      <span class="posts-count" id="posts-count"></span>
+      <button class="reload-btn" onclick="loadPosts()">
+        <i class="ti ti-refresh" aria-hidden="true"></i> 更新
+      </button>
+    </div>
+    <div class="posts" id="posts-list"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://fkdjlgoxywjgesmttejz.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZGpsZ294eXdqZ2VzbXR0ZWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjU0OTgsImV4cCI6MjA5NzUwMTQ5OH0.ivuabZgXB4mYc0HEzkjBzIhQmFlDlt9IG0hqMUuW6IU';
+    const TABLE = 'messages';
+
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function formatTime(iso) {
+      const d = new Date(iso);
+      const now = new Date();
+      const diff = (now - d) / 1000;
+      if (diff < 60) return 'たった今';
+      if (diff < 3600) return `${Math.floor(diff / 60)}分前`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}時間前`;
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mi = String(d.getMinutes()).padStart(2,'0');
+      return `${d.getFullYear()}/${mm}/${dd} ${hh}:${mi}`;
+    }
+
+    function getInitial(name) {
+      if (!name) return '?';
+      return [...name.trim()][0].toUpperCase();
+    }
+
+    function setToast(msg, type) {
+      const el = document.getElementById('form-toast');
+      el.className = 'toast ' + type;
+      el.textContent = msg;
+    }
+
+    function clearToast() {
+      const el = document.getElementById('form-toast');
+      el.className = 'toast';
+      el.textContent = '';
+    }
+
+    async function loadPosts() {
+      const list = document.getElementById('posts-list');
+      list.innerHTML = '<div class="loading-wrap"><i class="ti ti-loader-2 spin" aria-hidden="true"></i> 読み込み中...</div>';
+
+      const { data, error } = await db
+        .from(TABLE)
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        list.innerHTML = `<div class="empty"><i class="ti ti-alert-circle"></i>読み込みに失敗しました<br><small style="font-size:12px;margin-top:4px;display:block">${esc(error.message)}</small></div>`;
+        document.getElementById('posts-count').textContent = '';
+        return;
+      }
+
+      document.getElementById('posts-count').textContent = `${data.length} 件の投稿`;
+
+      if (!data.length) {
+        list.innerHTML = '<div class="empty"><i class="ti ti-mood-smile"></i>まだ投稿がありません</div>';
+        return;
+      }
+
+      list.innerHTML = data.map(p => {
+        const name = p.name?.trim() || '匿名';
+        const timeStr = p.created_at ? formatTime(p.created_at) : `#${p.id}`;
+        const roomBadge = p.room ? `<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#EEEDFE;color:#3C3489;">${esc(p.room)}</span>` : '';
+        return `
+          <div class="post-card" id="card-${p.id}">
+            <div class="post-header">
+              <div class="post-author">
+                <div class="avatar">${esc(getInitial(name))}</div>
+                <span class="author-name">${esc(name)}</span>
+                ${roomBadge}
+                <span class="post-time">${timeStr}</span>
+              </div>
+              <button class="del-btn" onclick="deletePost(${p.id})" title="削除" aria-label="削除">
+                <i class="ti ti-trash" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="post-content">${esc(p.body ?? '')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function deletePost(id) {
+      if (!confirm('この投稿を削除しますか？')) return;
+      const { error } = await db.from(TABLE).delete().eq('id', id);
+      if (error) { alert('削除エラー: ' + error.message); return; }
+      await loadPosts();
+    }
+
+    async function submitPost() {
+      const nameEl = document.getElementById('post-name');
+      const roomEl = document.getElementById('post-room');
+      const bodyEl = document.getElementById('post-body');
+      const btn = document.getElementById('submit-btn');
+
+      const body = bodyEl.value.trim();
+      if (!body) {
+        setToast('内容を入力してください', 'err');
+        bodyEl.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      setToast('投稿中...', 'loading');
+
+      const payload = {
+        body,
+        name: nameEl.value.trim() || null,
+        room: roomEl.value.trim() || 'general',
+      };
+
+      const { error } = await db.from(TABLE).insert([payload]);
+
+      if (error) {
+        setToast('エラー: ' + error.message, 'err');
+        btn.disabled = false;
+        return;
+      }
+
+      bodyEl.value = '';
+      clearToast();
+      btn.disabled = false;
+      await loadPosts();
+    }
+
+    document.getElementById('post-body').addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submitPost();
+    });
+
+    // リアルタイム更新
+    db.channel('messages-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, () => loadPosts())
+      .subscribe();
+
+    loadPosts();
+  </script>
+</body>
+</html>
