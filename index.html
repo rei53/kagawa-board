@@ -23,319 +23,126 @@
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #1e1e1c;
-        --bg-secondary: #2a2a28;
-        --text: #f0f0ee;
-        --text-secondary: #a0a09c;
-        --text-tertiary: #6a6a68;
-        --border: rgba(255,255,255,0.10);
-        --border-hover: rgba(255,255,255,0.22);
+        --bg: #1e1e1c; --bg-secondary: #2a2a28; --text: #f0f0ee;
+        --text-secondary: #a0a09c; --text-tertiary: #6a6a68;
+        --border: rgba(255,255,255,0.10); --border-hover: rgba(255,255,255,0.22);
       }
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg-secondary);
-      color: var(--text);
-      min-height: 100vh;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-secondary); color: var(--text); min-height: 100vh; }
 
     .app { max-width: 900px; margin: 0 auto; padding: 1rem; }
 
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-      padding-top: 0.5rem;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+    /* ヘッダー */
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-top: .5rem; flex-wrap: wrap; gap: 10px; }
+    .title { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
-    .title {
-      font-size: 20px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .tabs { display: flex; background: var(--bg); border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); padding: 3px; gap: 3px; }
+    .tab { height: 30px; padding: 0 14px; border: none; border-radius: 6px; background: transparent; color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; }
+    .tab.active { background: var(--accent); color: #fff; }
+    .tab:hover:not(.active) { background: var(--bg-secondary); color: var(--text); }
 
-    .month-nav { display: flex; align-items: center; gap: 10px; }
-
-    .month-label {
-      font-size: 17px;
-      font-weight: 600;
-      min-width: 110px;
-      text-align: center;
-    }
-
-    .nav-btn {
-      width: 34px;
-      height: 34px;
-      border: 0.5px solid var(--border-hover);
-      border-radius: var(--radius-md);
-      background: var(--bg);
-      color: var(--text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
+    .month-nav { display: flex; align-items: center; gap: 8px; }
+    .month-label { font-size: 16px; font-weight: 600; min-width: 110px; text-align: center; }
+    .nav-btn { width: 32px; height: 32px; border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); background: var(--bg); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
     .nav-btn:hover { background: var(--bg-secondary); }
+    .today-btn { height: 32px; padding: 0 12px; border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); background: var(--bg); color: var(--text-secondary); font-size: 12px; cursor: pointer; }
+    .today-btn:hover { color: var(--text); background: var(--bg-secondary); }
 
-    .today-btn {
-      height: 34px;
-      padding: 0 14px;
-      border: 0.5px solid var(--border-hover);
-      border-radius: var(--radius-md);
-      background: var(--bg);
-      color: var(--text-secondary);
-      font-size: 13px;
-      cursor: pointer;
-    }
+    /* サブヘッダー */
+    .subheader { margin-bottom: 1rem; }
 
-    .today-btn:hover { background: var(--bg-secondary); color: var(--text); }
+    /* シフト表パネル */
+    .shift-panel { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-    .calendar {
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
+    .auto-btn { height: 36px; padding: 0 16px; border: none; border-radius: var(--radius-md); background: var(--accent); color: #fff; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .auto-btn:hover { opacity: .88; }
+    .auto-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-    .cal-header {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      background: var(--bg-secondary);
-      border-bottom: 0.5px solid var(--border);
-    }
+    .result-msg { font-size: 13px; padding: 4px 10px; border-radius: var(--radius-md); }
+    .result-msg.ok { background: #EAF3DE; color: #27500A; }
+    .result-msg.err { background: #FCEBEB; color: #A32D2D; }
 
-    .cal-dow {
-      text-align: center;
-      padding: 8px 0;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-secondary);
-    }
+    /* 希望登録パネル */
+    .avail-panel { background: var(--bg); border: 0.5px solid var(--border-hover); border-radius: var(--radius-lg); padding: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .avail-panel-label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+    .avail-input { height: 36px; padding: 0 12px; border: 0.5px solid var(--border); border-radius: var(--radius-md); font-size: 13px; background: var(--bg-secondary); color: var(--text); outline: none; font-family: inherit; }
+    .avail-input:focus { box-shadow: 0 0 0 2px rgba(79,70,229,0.2); border-color: var(--accent); }
+    .avail-input.name-input { width: 120px; }
+    .avail-input.time-select { width: 90px; }
+    .avail-hint { font-size: 12px; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; }
+    .my-color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
+    .hidden { display: none !important; }
+
+    /* カレンダー */
+    .calendar { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--bg-secondary); border-bottom: 0.5px solid var(--border); }
+    .cal-dow { text-align: center; padding: 8px 0; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
     .cal-dow.sun { color: #E24B4A; }
     .cal-dow.sat { color: #3B82F6; }
-
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
 
-    .cal-cell {
-      border-right: 0.5px solid var(--border);
-      border-bottom: 0.5px solid var(--border);
-      min-height: 90px;
-      padding: 6px;
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-
+    .cal-cell { border-right: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); min-height: 90px; padding: 6px; cursor: pointer; transition: background .1s; position: relative; }
     .cal-cell:nth-child(7n) { border-right: none; }
     .cal-cell:hover { background: #f0f0ff; }
-    .cal-cell.other-month { opacity: 0.3; pointer-events: none; }
+    .cal-cell.other-month { opacity: .3; pointer-events: none; }
+    .cal-cell.mine { background: #f0f0ff; }
+    .cal-cell.mine:hover { background: #e8e8ff; }
 
-    .day-num {
-      font-size: 13px;
-      font-weight: 500;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 4px;
-      border-radius: 50%;
+    @media (prefers-color-scheme: dark) {
+      .cal-cell:hover { background: #2a2a3a; }
+      .cal-cell.mine { background: #25254a; }
+      .cal-cell.mine:hover { background: #2d2d5a; }
     }
 
+    .day-num { font-size: 13px; font-weight: 500; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; border-radius: 50%; }
     .cal-cell.today .day-num { background: var(--accent); color: #fff; }
     .cal-cell.sun .day-num { color: #E24B4A; }
     .cal-cell.sat .day-num { color: #3B82F6; }
-    .cal-cell.today .day-num { color: #fff; }
+    .cal-cell.today .day-num { color: #fff !important; }
 
-    .shift-badges { display: flex; flex-direction: column; gap: 2px; }
-
-    .shift-badge {
-      font-size: 11px;
-      padding: 2px 5px;
-      border-radius: 4px;
-      line-height: 1.4;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
+    .shift-badges, .avail-badges { display: flex; flex-direction: column; gap: 2px; }
+    .shift-badge, .avail-badge { font-size: 11px; padding: 2px 5px; border-radius: 4px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .more-badge { font-size: 11px; color: var(--text-tertiary); padding: 1px 4px; }
 
+    .mine-check { position: absolute; top: 5px; right: 5px; font-size: 14px; color: var(--accent); }
+
     /* モーダル */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      padding: 1rem;
-    }
-
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
     .modal-overlay.hidden { display: none; }
-
-    .modal {
-      background: var(--bg);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.3);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .modal { background: var(--bg); border-radius: var(--radius-lg); padding: 20px; width: 100%; max-width: 420px; box-shadow: 0 24px 64px rgba(0,0,0,.3); max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
     .form-group { margin-bottom: 12px; }
-
-    .form-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 4px;
-      display: block;
-    }
-
-    .form-input, .form-select {
-      width: 100%;
-      height: 38px;
-      padding: 0 12px;
-      border: 0.5px solid var(--border-hover);
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      background: var(--bg-secondary);
-      color: var(--text);
-      outline: none;
-      font-family: inherit;
-    }
-
-    .form-input:focus, .form-select:focus {
-      box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
-      border-color: var(--accent);
-    }
-
+    .form-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; display: block; }
+    .form-input, .form-select { width: 100%; height: 38px; padding: 0 12px; border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); font-size: 14px; background: var(--bg-secondary); color: var(--text); outline: none; font-family: inherit; }
+    .form-input:focus, .form-select:focus { box-shadow: 0 0 0 2px rgba(79,70,229,.2); border-color: var(--accent); }
     .time-row { display: flex; gap: 8px; align-items: center; }
-    .time-sep { color: var(--text-tertiary); flex-shrink: 0; font-size: 14px; }
+    .time-sep { color: var(--text-tertiary); flex-shrink: 0; }
 
     .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
-
-    .btn-primary {
-      flex: 1;
-      height: 40px;
-      border: none;
-      border-radius: var(--radius-md);
-      background: var(--accent);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-primary:hover { opacity: 0.88; }
-    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .btn-close {
-      height: 40px;
-      padding: 0 16px;
-      border: 0.5px solid var(--border-hover);
-      border-radius: var(--radius-md);
-      background: transparent;
-      color: var(--text);
-      font-size: 14px;
-      cursor: pointer;
-    }
-
+    .btn-primary { flex: 1; height: 40px; border: none; border-radius: var(--radius-md); background: var(--accent); color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-primary:hover { opacity: .88; }
+    .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-close { height: 40px; padding: 0 16px; border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); background: transparent; color: var(--text); font-size: 14px; cursor: pointer; }
     .btn-close:hover { background: var(--bg-secondary); }
 
     .shift-list { margin-bottom: 4px; }
-
-    .shift-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 10px;
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-md);
-      margin-bottom: 6px;
-    }
-
+    .shift-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border: 0.5px solid var(--border); border-radius: var(--radius-md); margin-bottom: 6px; }
     .shift-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-
-    .shift-name-badge {
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 500;
-    }
-
+    .shift-name-badge { font-size: 12px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
     .shift-time { font-size: 13px; color: var(--text-secondary); }
     .shift-note { font-size: 12px; color: var(--text-tertiary); }
 
-    .del-btn {
-      width: 28px;
-      height: 28px;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-md);
-      color: var(--text-tertiary);
-      font-size: 15px;
-      flex-shrink: 0;
-    }
-
+    .del-btn { width: 28px; height: 28px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); color: var(--text-tertiary); font-size: 15px; flex-shrink: 0; }
     .del-btn:hover { background: #FCEBEB; color: #A32D2D; }
 
     .divider { border: none; border-top: 0.5px solid var(--border); margin: 14px 0; }
+    .add-form-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .no-shift-msg { font-size: 13px; color: var(--text-tertiary); padding: 8px 0; text-align: center; }
 
-    .add-form-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .no-shift-msg {
-      font-size: 13px;
-      color: var(--text-tertiary);
-      margin-bottom: 4px;
-      padding: 8px 0;
-      text-align: center;
-    }
-
-    .toast {
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: var(--radius-md);
-      margin-top: 8px;
-      display: none;
-    }
-
+    .toast { font-size: 12px; padding: 6px 10px; border-radius: var(--radius-md); margin-top: 8px; display: none; }
     .toast.err { background: #FCEBEB; color: #A32D2D; display: block; }
     .toast.loading { background: #E6F1FB; color: #0C447C; display: block; }
 
@@ -343,10 +150,15 @@
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="header">
-      <div class="title">
-        <i class="ti ti-calendar-event"></i> 学童シフト表
+<div class="app">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="title"><i class="ti ti-calendar-event"></i> 学童シフト表</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="tabs">
+        <button class="tab active" data-mode="shift" onclick="setMode('shift')"><i class="ti ti-calendar"></i> シフト表</button>
+        <button class="tab" data-mode="avail" onclick="setMode('avail')"><i class="ti ti-hand-finger"></i> 希望登録</button>
       </div>
       <div class="month-nav">
         <button class="today-btn" onclick="goToday()">今月</button>
@@ -355,265 +167,363 @@
         <button class="nav-btn" onclick="nextMonth()"><i class="ti ti-chevron-right"></i></button>
       </div>
     </div>
+  </div>
 
-    <div class="calendar">
-      <div class="cal-header">
-        <div class="cal-dow sun">日</div>
-        <div class="cal-dow">月</div>
-        <div class="cal-dow">火</div>
-        <div class="cal-dow">水</div>
-        <div class="cal-dow">木</div>
-        <div class="cal-dow">金</div>
-        <div class="cal-dow sat">土</div>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
+  <!-- サブヘッダー -->
+  <div class="subheader">
+    <!-- シフト表パネル -->
+    <div class="shift-panel" id="shift-panel">
+      <button class="auto-btn" id="auto-btn" onclick="autoGenerate()">
+        <i class="ti ti-wand"></i> 希望からシフトを自動作成
+      </button>
+      <span id="auto-result" class="result-msg" style="display:none"></span>
+    </div>
+
+    <!-- 希望登録パネル -->
+    <div class="avail-panel hidden" id="avail-panel">
+      <span class="avail-panel-label"><i class="ti ti-user"></i> 名前</span>
+      <input type="text" id="my-name" class="avail-input name-input" placeholder="あなたの名前" maxlength="20" oninput="renderCalendar()" />
+      <span class="avail-panel-label" style="margin-left:6px">希望時間</span>
+      <select id="my-start" class="avail-input time-select"></select>
+      <span style="font-size:13px;color:var(--text-tertiary)">〜</span>
+      <select id="my-end" class="avail-input time-select"></select>
+      <span class="avail-hint"><i class="ti ti-info-circle"></i> 日付をタップして希望日を登録・取り消し</span>
     </div>
   </div>
 
-  <!-- モーダル -->
-  <div class="modal-overlay hidden" id="modal-overlay" onclick="onOverlayClick(event)">
-    <div class="modal">
-      <div class="modal-title">
-        <i class="ti ti-calendar-plus"></i>
-        <span id="modal-date-label"></span>
-      </div>
+  <!-- カレンダー -->
+  <div class="calendar">
+    <div class="cal-header">
+      <div class="cal-dow sun">日</div><div class="cal-dow">月</div><div class="cal-dow">火</div>
+      <div class="cal-dow">水</div><div class="cal-dow">木</div><div class="cal-dow">金</div>
+      <div class="cal-dow sat">土</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+</div>
 
-      <div class="shift-list" id="modal-shift-list"></div>
-
-      <hr class="divider" />
-
-      <div class="add-form-title">
-        <i class="ti ti-plus"></i> シフトを追加
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">スタッフ名</label>
-        <input type="text" id="f-name" class="form-input" placeholder="名前を入力" maxlength="20" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">勤務時間</label>
-        <div class="time-row">
-          <select id="f-start" class="form-select"></select>
-          <span class="time-sep">〜</span>
-          <select id="f-end" class="form-select"></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">メモ（任意）</label>
-        <input type="text" id="f-note" class="form-input" placeholder="例：早番・リーダー" maxlength="30" />
-      </div>
-
-      <div id="modal-toast" class="toast"></div>
-
-      <div class="modal-actions">
-        <button class="btn-close" onclick="closeModal()">閉じる</button>
-        <button class="btn-primary" id="add-btn" onclick="addShift()">
-          <i class="ti ti-plus"></i> 追加する
-        </button>
+<!-- シフト詳細モーダル -->
+<div class="modal-overlay hidden" id="modal-overlay" onclick="onOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-calendar-plus"></i><span id="modal-date-label"></span></div>
+    <div class="shift-list" id="modal-shift-list"></div>
+    <hr class="divider" />
+    <div class="add-form-title"><i class="ti ti-plus"></i> シフトを追加</div>
+    <div class="form-group">
+      <label class="form-label">スタッフ名</label>
+      <input type="text" id="f-name" class="form-input" placeholder="名前を入力" maxlength="20" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">勤務時間</label>
+      <div class="time-row">
+        <select id="f-start" class="form-select"></select>
+        <span class="time-sep">〜</span>
+        <select id="f-end" class="form-select"></select>
       </div>
     </div>
+    <div class="form-group">
+      <label class="form-label">メモ（任意）</label>
+      <input type="text" id="f-note" class="form-input" placeholder="例：早番・リーダー" maxlength="30" />
+    </div>
+    <div id="modal-toast" class="toast"></div>
+    <div class="modal-actions">
+      <button class="btn-close" onclick="closeModal()">閉じる</button>
+      <button class="btn-primary" id="add-btn" onclick="addShift()"><i class="ti ti-plus"></i> 追加する</button>
+    </div>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script>
-    const SUPABASE_URL = 'https://fkdjlgoxywjgesmttejz.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZGpsZ294eXdqZ2VzbXR0ZWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjU0OTgsImV4cCI6MjA5NzUwMTQ5OH0.ivuabZgXB4mYc0HEzkjBzIhQmFlDlt9IG0hqMUuW6IU';
-    const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-    const TABLE = 'shifts';
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const SUPABASE_URL = 'https://fkdjlgoxywjgesmttejz.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZGpsZ294eXdqZ2VzbXR0ZWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjU0OTgsImV4cCI6MjA5NzUwMTQ5OH0.ivuabZgXB4mYc0HEzkjBzIhQmFlDlt9IG0hqMUuW6IU';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SHIFTS = 'shifts';
+  const AVAIL  = 'availability';
 
-    const STAFF_COLORS = [
-      { bg: '#EEEDFE', text: '#3C3489' },
-      { bg: '#EAF3DE', text: '#27500A' },
-      { bg: '#FAEEDA', text: '#633806' },
-      { bg: '#E6F1FB', text: '#0C447C' },
-      { bg: '#FCEBEB', text: '#A32D2D' },
-      { bg: '#FEF3C7', text: '#92400E' },
-      { bg: '#D1FAE5', text: '#065F46' },
-      { bg: '#FCE7F3', text: '#9D174D' },
-    ];
+  const COLORS = [
+    { bg:'#EEEDFE', text:'#3C3489' }, { bg:'#EAF3DE', text:'#27500A' },
+    { bg:'#FAEEDA', text:'#633806' }, { bg:'#E6F1FB', text:'#0C447C' },
+    { bg:'#FCEBEB', text:'#A32D2D' }, { bg:'#FEF3C7', text:'#92400E' },
+    { bg:'#D1FAE5', text:'#065F46' }, { bg:'#FCE7F3', text:'#9D174D' },
+  ];
 
-    function staffColor(name) {
-      let h = 0;
-      for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-      return STAFF_COLORS[h % STAFF_COLORS.length];
-    }
+  function staffColor(name) {
+    let h = 0;
+    for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return COLORS[h % COLORS.length];
+  }
 
-    function esc(s) {
-      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 
-    const today = new Date();
-    let year = today.getFullYear();
-    let month = today.getMonth();
-    let allShifts = [];
-    let selectedDate = null;
+  const today = new Date();
+  let year = today.getFullYear(), month = today.getMonth();
+  let allShifts = [], allAvailability = [];
+  let selectedDate = null;
+  let mode = 'shift';
 
-    function initTimeSelects() {
-      const opts = [];
-      for (let h = 6; h <= 22; h++) {
-        for (const m of [0, 30]) {
-          if (h === 22 && m === 30) continue;
-          opts.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
-        }
+  // ---- 時間セレクト初期化 ----
+  function buildTimeOpts(selId, defaultVal) {
+    const sel = document.getElementById(selId);
+    for (let h = 6; h <= 22; h++) {
+      for (const m of [0, 30]) {
+        if (h === 22 && m === 30) continue;
+        const v = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        sel.innerHTML += `<option value="${v}">${v}</option>`;
       }
-      const start = document.getElementById('f-start');
-      const end = document.getElementById('f-end');
-      opts.forEach(t => {
-        start.innerHTML += `<option value="${t}">${t}</option>`;
-        end.innerHTML += `<option value="${t}">${t}</option>`;
-      });
-      start.value = '13:00';
-      end.value = '19:00';
     }
+    sel.value = defaultVal;
+  }
 
-    function toDateStr(y, m, d) {
-      return `${y}-${String(m + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    }
+  function toDateStr(y, m, d) {
+    return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
 
-    function goToday() { year = today.getFullYear(); month = today.getMonth(); loadShifts(); }
-    function prevMonth() { if (month === 0) { month = 11; year--; } else month--; loadShifts(); }
-    function nextMonth() { if (month === 11) { month = 0; year++; } else month++; loadShifts(); }
+  // ---- モード切替 ----
+  function setMode(m) {
+    mode = m;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.mode === m));
+    document.getElementById('shift-panel').classList.toggle('hidden', m !== 'shift');
+    document.getElementById('avail-panel').classList.toggle('hidden', m !== 'avail');
+    renderCalendar();
+  }
 
-    async function loadShifts() {
-      const firstDay = toDateStr(year, month, 1);
-      const lastDay = toDateStr(year, month, new Date(year, month + 1, 0).getDate());
-      const { data, error } = await db.from(TABLE).select('*').gte('date', firstDay).lte('date', lastDay).order('start_time');
-      if (!error) allShifts = data || [];
-      renderCalendar();
-    }
+  // ---- 月操作 ----
+  function goToday() { year = today.getFullYear(); month = today.getMonth(); loadAll(); }
+  function prevMonth() { if (month===0){month=11;year--;}else month--; loadAll(); }
+  function nextMonth() { if (month===11){month=0;year++;}else month++; loadAll(); }
 
-    function renderCalendar() {
-      const todayStr = toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
-      document.getElementById('month-label').textContent = `${year}年 ${month + 1}月`;
+  // ---- データ読み込み ----
+  async function loadAll() {
+    const first = toDateStr(year, month, 1);
+    const last  = toDateStr(year, month, new Date(year, month+1, 0).getDate());
+    const [sr, ar] = await Promise.all([
+      db.from(SHIFTS).select('*').gte('date', first).lte('date', last).order('start_time'),
+      db.from(AVAIL ).select('*').gte('date', first).lte('date', last).order('start_time')
+    ]);
+    if (!sr.error) allShifts = sr.data || [];
+    if (!ar.error) allAvailability = ar.data || [];
+    renderCalendar();
+  }
 
-      const firstDow = new Date(year, month, 1).getDay();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const daysInPrev = new Date(year, month, 0).getDate();
-      const total = Math.ceil((firstDow + daysInMonth) / 7) * 7;
+  // ---- カレンダー描画 ----
+  function renderCalendar() {
+    const todayStr = toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+    const myName = document.getElementById('my-name').value.trim();
+    document.getElementById('month-label').textContent = `${year}年 ${month+1}月`;
 
-      let html = '';
-      for (let i = 0; i < total; i++) {
-        let d, y2, m2, otherMonth = false;
-        if (i < firstDow) {
-          d = daysInPrev - firstDow + i + 1; y2 = month === 0 ? year - 1 : year; m2 = month === 0 ? 11 : month - 1; otherMonth = true;
-        } else if (i >= firstDow + daysInMonth) {
-          d = i - firstDow - daysInMonth + 1; y2 = month === 11 ? year + 1 : year; m2 = month === 11 ? 0 : month + 1; otherMonth = true;
-        } else {
-          d = i - firstDow + 1; y2 = year; m2 = month;
-        }
+    const firstDow   = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const daysInPrev  = new Date(year, month, 0).getDate();
+    const total = Math.ceil((firstDow + daysInMonth) / 7) * 7;
 
-        const dateStr = toDateStr(y2, m2, d);
-        const dow = i % 7;
-        const isToday = dateStr === todayStr;
+    let html = '';
+    for (let i = 0; i < total; i++) {
+      let d, y2, m2, otherMonth = false;
+      if (i < firstDow) {
+        d = daysInPrev - firstDow + i + 1; y2 = month===0?year-1:year; m2 = month===0?11:month-1; otherMonth = true;
+      } else if (i >= firstDow + daysInMonth) {
+        d = i - firstDow - daysInMonth + 1; y2 = month===11?year+1:year; m2 = month===11?0:month+1; otherMonth = true;
+      } else {
+        d = i - firstDow + 1; y2 = year; m2 = month;
+      }
+
+      const dateStr = toDateStr(y2, m2, d);
+      const dow = i % 7;
+      const isToday = dateStr === todayStr;
+
+      if (mode === 'shift') {
         const dayShifts = allShifts.filter(s => s.date === dateStr);
-
         let cls = 'cal-cell';
         if (otherMonth) cls += ' other-month';
-        if (isToday) cls += ' today';
-        if (dow === 0) cls += ' sun';
-        if (dow === 6) cls += ' sat';
+        if (isToday)    cls += ' today';
+        if (dow === 0)  cls += ' sun';
+        if (dow === 6)  cls += ' sat';
 
-        const badges = dayShifts.slice(0, 3).map(s => {
+        const badges = dayShifts.slice(0,3).map(s => {
           const col = staffColor(s.staff_name);
           return `<div class="shift-badge" style="background:${col.bg};color:${col.text}">${esc(s.staff_name)} ${s.start_time.slice(0,5)}-${s.end_time.slice(0,5)}</div>`;
         }).join('');
-        const more = dayShifts.length > 3 ? `<div class="more-badge">+${dayShifts.length - 3}件</div>` : '';
+        const more = dayShifts.length > 3 ? `<div class="more-badge">+${dayShifts.length-3}件</div>` : '';
 
-        html += `<div class="${cls}" onclick="openModal('${dateStr}', ${d})"><div class="day-num">${d}</div><div class="shift-badges">${badges}${more}</div></div>`;
+        html += `<div class="${cls}" onclick="openModal('${dateStr}',${d})"><div class="day-num">${d}</div><div class="shift-badges">${badges}${more}</div></div>`;
+
+      } else {
+        // 希望登録モード
+        const dayAvail = allAvailability.filter(a => a.date === dateStr);
+        const isMine = myName && dayAvail.some(a => a.staff_name === myName);
+
+        let cls = 'cal-cell';
+        if (otherMonth) cls += ' other-month';
+        if (isToday)    cls += ' today';
+        if (dow === 0)  cls += ' sun';
+        if (dow === 6)  cls += ' sat';
+        if (isMine)     cls += ' mine';
+
+        const badges = dayAvail.slice(0,3).map(a => {
+          const col = staffColor(a.staff_name);
+          return `<div class="avail-badge" style="background:${col.bg};color:${col.text}">${esc(a.staff_name)}</div>`;
+        }).join('');
+        const more = dayAvail.length > 3 ? `<div class="more-badge">+${dayAvail.length-3}</div>` : '';
+        const check = isMine ? `<span class="mine-check"><i class="ti ti-check"></i></span>` : '';
+
+        html += `<div class="${cls}" onclick="toggleAvail('${dateStr}',${d})">${check}<div class="day-num">${d}</div><div class="avail-badges">${badges}${more}</div></div>`;
       }
-      document.getElementById('cal-grid').innerHTML = html;
+    }
+    document.getElementById('cal-grid').innerHTML = html;
+  }
+
+  // ---- 希望登録トグル ----
+  async function toggleAvail(dateStr, d) {
+    const name = document.getElementById('my-name').value.trim();
+    if (!name) {
+      document.getElementById('my-name').focus();
+      document.getElementById('my-name').style.boxShadow = '0 0 0 2px #E24B4A';
+      setTimeout(() => document.getElementById('my-name').style.boxShadow = '', 1500);
+      return;
     }
 
-    function openModal(dateStr, d) {
-      selectedDate = dateStr;
-      const [y, m] = dateStr.split('-');
-      document.getElementById('modal-date-label').textContent = `${y}年${parseInt(m)}月${d}日`;
-      document.getElementById('modal-overlay').classList.remove('hidden');
-      document.getElementById('modal-toast').className = 'toast';
-      renderModalShifts();
-      setTimeout(() => document.getElementById('f-name').focus(), 50);
+    const existing = allAvailability.find(a => a.staff_name === name && a.date === dateStr);
+    if (existing) {
+      await db.from(AVAIL).delete().eq('id', existing.id);
+    } else {
+      const start = document.getElementById('my-start').value;
+      const end   = document.getElementById('my-end').value;
+      if (start >= end) { alert('終了時間は開始時間より後にしてください'); return; }
+      await db.from(AVAIL).insert([{ staff_name: name, date: dateStr, start_time: start+':00', end_time: end+':00' }]);
+    }
+    await loadAll();
+  }
+
+  // ---- 自動シフト作成 ----
+  async function autoGenerate() {
+    const toInsert = allAvailability.filter(a =>
+      !allShifts.some(s => s.staff_name === a.staff_name && s.date === a.date)
+    ).map(a => ({ date: a.date, staff_name: a.staff_name, start_time: a.start_time, end_time: a.end_time }));
+
+    const resultEl = document.getElementById('auto-result');
+    if (!toInsert.length) {
+      resultEl.style.display = 'inline-block';
+      resultEl.className = 'result-msg err';
+      resultEl.textContent = '新しく作成するシフトがありません（全員反映済みです）';
+      setTimeout(() => resultEl.style.display = 'none', 3000);
+      return;
     }
 
-    function renderModalShifts() {
-      const shifts = allShifts.filter(s => s.date === selectedDate);
-      const list = document.getElementById('modal-shift-list');
-      if (!shifts.length) {
-        list.innerHTML = '<div class="no-shift-msg"><i class="ti ti-calendar-off"></i> この日のシフトはまだありません</div>';
-        return;
-      }
-      list.innerHTML = shifts.map(s => {
-        const col = staffColor(s.staff_name);
-        return `<div class="shift-item">
-          <div class="shift-info">
-            <span class="shift-name-badge" style="background:${col.bg};color:${col.text}">${esc(s.staff_name)}</span>
-            <span class="shift-time">${s.start_time.slice(0,5)} 〜 ${s.end_time.slice(0,5)}</span>
-            ${s.note ? `<span class="shift-note">${esc(s.note)}</span>` : ''}
-          </div>
-          <button class="del-btn" onclick="deleteShift(${s.id})" title="削除"><i class="ti ti-trash"></i></button>
-        </div>`;
-      }).join('');
+    if (!confirm(`${toInsert.length}件のシフトを自動作成します。よろしいですか？`)) return;
+
+    const btn = document.getElementById('auto-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader-2" style="animation:spin 1s linear infinite"></i> 作成中...';
+
+    const { error } = await db.from(SHIFTS).insert(toInsert);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-wand"></i> 希望からシフトを自動作成';
+
+    resultEl.style.display = 'inline-block';
+    if (error) {
+      resultEl.className = 'result-msg err';
+      resultEl.textContent = 'エラー: ' + error.message;
+    } else {
+      resultEl.className = 'result-msg ok';
+      resultEl.textContent = `✅ ${toInsert.length}件のシフトを作成しました！`;
+      setTimeout(() => resultEl.style.display = 'none', 4000);
+      await loadAll();
     }
+  }
 
-    function onOverlayClick(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
-    function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); selectedDate = null; }
+  // ---- シフト詳細モーダル ----
+  function openModal(dateStr, d) {
+    selectedDate = dateStr;
+    const [y, m] = dateStr.split('-');
+    document.getElementById('modal-date-label').textContent = `${y}年${parseInt(m)}月${d}日`;
+    document.getElementById('modal-overlay').classList.remove('hidden');
+    document.getElementById('modal-toast').className = 'toast';
+    renderModalShifts();
+    setTimeout(() => document.getElementById('f-name').focus(), 50);
+  }
 
-    function setToast(msg, type) {
-      const el = document.getElementById('modal-toast');
-      el.className = 'toast ' + type;
-      el.textContent = msg;
+  function renderModalShifts() {
+    const shifts = allShifts.filter(s => s.date === selectedDate);
+    const list = document.getElementById('modal-shift-list');
+    if (!shifts.length) {
+      list.innerHTML = '<div class="no-shift-msg"><i class="ti ti-calendar-off"></i> この日のシフトはまだありません</div>';
+      return;
     }
+    list.innerHTML = shifts.map(s => {
+      const col = staffColor(s.staff_name);
+      return `<div class="shift-item">
+        <div class="shift-info">
+          <span class="shift-name-badge" style="background:${col.bg};color:${col.text}">${esc(s.staff_name)}</span>
+          <span class="shift-time">${s.start_time.slice(0,5)} 〜 ${s.end_time.slice(0,5)}</span>
+          ${s.note ? `<span class="shift-note">${esc(s.note)}</span>` : ''}
+        </div>
+        <button class="del-btn" onclick="deleteShift(${s.id})" title="削除"><i class="ti ti-trash"></i></button>
+      </div>`;
+    }).join('');
+  }
 
-    async function addShift() {
-      const name = document.getElementById('f-name').value.trim();
-      const start = document.getElementById('f-start').value;
-      const end = document.getElementById('f-end').value;
-      const note = document.getElementById('f-note').value.trim();
+  function onOverlayClick(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+  function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); selectedDate = null; }
 
-      if (!name) { setToast('スタッフ名を入力してください', 'err'); document.getElementById('f-name').focus(); return; }
-      if (start >= end) { setToast('終了時間は開始時間より後にしてください', 'err'); return; }
+  function setModalToast(msg, type) {
+    const el = document.getElementById('modal-toast');
+    el.className = 'toast ' + type;
+    el.textContent = msg;
+  }
 
-      const btn = document.getElementById('add-btn');
-      btn.disabled = true;
-      setToast('追加中...', 'loading');
+  async function addShift() {
+    const name  = document.getElementById('f-name').value.trim();
+    const start = document.getElementById('f-start').value;
+    const end   = document.getElementById('f-end').value;
+    const note  = document.getElementById('f-note').value.trim();
 
-      const { error } = await db.from(TABLE).insert([{
-        date: selectedDate,
-        staff_name: name,
-        start_time: start + ':00',
-        end_time: end + ':00',
-        note: note || null
-      }]);
+    if (!name) { setModalToast('スタッフ名を入力してください', 'err'); document.getElementById('f-name').focus(); return; }
+    if (start >= end) { setModalToast('終了時間は開始時間より後にしてください', 'err'); return; }
 
-      btn.disabled = false;
-      if (error) { setToast('エラー: ' + error.message, 'err'); return; }
+    const btn = document.getElementById('add-btn');
+    btn.disabled = true;
+    setModalToast('追加中...', 'loading');
 
-      document.getElementById('f-name').value = '';
-      document.getElementById('f-note').value = '';
-      document.getElementById('modal-toast').className = 'toast';
-      await loadShifts();
-      renderModalShifts();
-    }
+    const { error } = await db.from(SHIFTS).insert([{
+      date: selectedDate, staff_name: name,
+      start_time: start+':00', end_time: end+':00', note: note||null
+    }]);
 
-    async function deleteShift(id) {
-      if (!confirm('このシフトを削除しますか？')) return;
-      const { error } = await db.from(TABLE).delete().eq('id', id);
-      if (error) { alert('削除エラー: ' + error.message); return; }
-      await loadShifts();
-      renderModalShifts();
-    }
+    btn.disabled = false;
+    if (error) { setModalToast('エラー: ' + error.message, 'err'); return; }
 
-    document.getElementById('f-name').addEventListener('keydown', e => { if (e.key === 'Enter') addShift(); });
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-note').value = '';
+    document.getElementById('modal-toast').className = 'toast';
+    await loadAll();
+    renderModalShifts();
+  }
 
-    db.channel('shifts-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, async () => {
-        await loadShifts();
-        if (selectedDate) renderModalShifts();
-      })
-      .subscribe();
+  async function deleteShift(id) {
+    if (!confirm('このシフトを削除しますか？')) return;
+    const { error } = await db.from(SHIFTS).delete().eq('id', id);
+    if (error) { alert('削除エラー: ' + error.message); return; }
+    await loadAll();
+    renderModalShifts();
+  }
 
-    initTimeSelects();
-    loadShifts();
-  </script>
+  document.getElementById('f-name').addEventListener('keydown', e => { if (e.key==='Enter') addShift(); });
+
+  // リアルタイム
+  db.channel('realtime-all')
+    .on('postgres_changes', { event:'*', schema:'public', table: SHIFTS }, async () => { await loadAll(); if (selectedDate) renderModalShifts(); })
+    .on('postgres_changes', { event:'*', schema:'public', table: AVAIL  }, () => loadAll())
+    .subscribe();
+
+  buildTimeOpts('f-start', '13:00');
+  buildTimeOpts('f-end',   '19:00');
+  buildTimeOpts('my-start','13:00');
+  buildTimeOpts('my-end',  '19:00');
+  loadAll();
+</script>
 </body>
 </html>
