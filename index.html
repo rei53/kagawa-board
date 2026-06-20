@@ -132,6 +132,24 @@
     .warn-box{background:#FEF3C7;border:.5px solid #D97706;border-radius:var(--r);padding:10px 12px;margin-bottom:10px;font-size:12px;color:#92400E;line-height:1.6;}
     .warn-box ul{padding-left:16px;margin-top:4px;}
 
+    /* イベント */
+    .evt-badge{font-size:10px;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#6B21A8;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:3px;}
+    .esect-title{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+    .eitem{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border:.5px solid #E9D5FF;border-radius:var(--r);margin-bottom:5px;background:#FAFAFE;}
+    @media(prefers-color-scheme:dark){.eitem{background:#1e1a2a;border-color:#4c1d95;}}
+    .einfo{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+    .etitle{font-size:12px;font-weight:500;color:#6B21A8;}
+    .etime{font-size:12px;color:var(--text2);}
+    .enote{font-size:11px;color:var(--text3);}
+    .equick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+    .qbtn{height:28px;padding:0 10px;border:.5px solid #D8B4FE;border-radius:var(--r);background:#F3E8FF;color:#6B21A8;font-size:12px;cursor:pointer;}
+    .qbtn:hover{background:#EDE9FE;}
+    .eform{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;}
+    .eform .fi{flex:1;min-width:100px;}
+    .eform .tm{width:80px!important;flex:none;}
+    .eadd-btn{height:34px;padding:0 12px;border:none;border-radius:var(--r);background:#7C3AED;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap;}
+    .eadd-btn:hover{opacity:.88;}
+
     @keyframes spin{to{transform:rotate(360deg);}}
   </style>
 </head>
@@ -205,6 +223,23 @@
       <div class="hours-info" id="hours-info"><i class="ti ti-clock"></i> 開所時間：13:00〜19:30　最低 2名</div>
     </div>
 
+    <!-- イベントセクション -->
+    <div class="esect-title"><i class="ti ti-sparkles"></i> 予定・イベント</div>
+    <div id="mevtlist"></div>
+    <div class="equick">
+      <button class="qbtn" onclick="fillEvt('こどもヨーガ')">🧘 こどもヨーガ</button>
+      <button class="qbtn" onclick="fillEvt('保護者会')">👥 保護者会</button>
+      <button class="qbtn" onclick="fillEvt('行事')">🎉 行事</button>
+    </div>
+    <div class="eform">
+      <input type="text" id="et" class="fi" placeholder="イベント名" maxlength="30" style="height:34px;font-size:13px;" />
+      <select id="es" class="fi tm" style="height:34px;font-size:13px;"></select>
+      <span class="tsep">〜</span>
+      <select id="ee" class="fi tm" style="height:34px;font-size:13px;"></select>
+      <button class="eadd-btn" onclick="addEvent()"><i class="ti ti-plus"></i> 追加</button>
+    </div>
+
+    <hr class="divider" />
     <div class="slist" id="mslist"></div>
     <hr class="divider" />
     <div class="aft"><i class="ti ti-plus"></i> シフトを追加</div>
@@ -245,7 +280,7 @@ const SUPABASE_URL = 'https://fkdjlgoxywjgesmttejz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZGpsZ294eXdqZ2VzbXR0ZWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjU0OTgsImV4cCI6MjA5NzUwMTQ5OH0.ivuabZgXB4mYc0HEzkjBzIhQmFlDlt9IG0hqMUuW6IU';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-const T_SHIFTS = 'shifts', T_AVAIL = 'availability', T_CFG = 'day_config';
+const T_SHIFTS = 'shifts', T_AVAIL = 'availability', T_CFG = 'day_config', T_EVENTS = 'events';
 
 const COLORS = [
   {bg:'#EEEDFE',text:'#3C3489'},{bg:'#EAF3DE',text:'#27500A'},{bg:'#FAEEDA',text:'#633806'},
@@ -257,7 +292,7 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 const today=new Date();
 let year=today.getFullYear(),month=today.getMonth();
-let allShifts=[],allAvail=[],allCfg=[];
+let allShifts=[],allAvail=[],allCfg=[],allEvents=[];
 let selDate=null,mode='shift';
 
 function toDS(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
@@ -283,14 +318,16 @@ function nextMonth(){if(month===11){month=0;year++;}else month++;loadAll();}
 async function loadAll(){
   const first=toDS(year,month,1);
   const last=toDS(year,month,new Date(year,month+1,0).getDate());
-  const [sr,ar,cr]=await Promise.all([
+  const [sr,ar,cr,er]=await Promise.all([
     db.from(T_SHIFTS).select('*').gte('date',first).lte('date',last).order('start_time'),
     db.from(T_AVAIL ).select('*').gte('date',first).lte('date',last).order('start_time'),
     db.from(T_CFG   ).select('*').gte('date',first).lte('date',last),
+    db.from(T_EVENTS).select('*').gte('date',first).lte('date',last).order('start_time'),
   ]);
   if(!sr.error)allShifts=sr.data||[];
   if(!ar.error)allAvail=ar.data||[];
   if(!cr.error)allCfg=cr.data||[];
+  if(!er.error)allEvents=er.data||[];
   renderCal();
 }
 
@@ -349,13 +386,17 @@ function renderCal(){
 
     if(mode==='shift'){
       const dayS=allShifts.filter(s=>s.date===ds);
+      const dayEvt=allEvents.filter(e=>e.date===ds);
+      const evtBgs=dayEvt.slice(0,2).map(e=>`<div class="evt-badge"><i class="ti ti-sparkles" style="font-size:9px"></i>${esc(e.title)}${e.start_time?' '+e.start_time.slice(0,5):''}</div>`).join('');
+      const evtMore=dayEvt.length>2?`<div class="mbadge" style="color:#6B21A8">+${dayEvt.length-2}</div>`:'';
+      const dayS=allShifts.filter(s=>s.date===ds);
       const bgs=dayS.slice(0,3).map(s=>{const c=staffColor(s.staff_name);return`<div class="badge" style="background:${c.bg};color:${c.text}">${esc(s.staff_name)} ${s.start_time.slice(0,5)}-${s.end_time.slice(0,5)}</div>`;}).join('');
       const more=dayS.length>3?`<div class="mbadge">+${dayS.length-3}件</div>`:'';
       const st=!om?getStaffingStatus(ds):null;
       const stag=st?`<span class="stag ${st.type}">${esc(st.label)}</span>`:'';
       const htag=cfg.is_long_holiday?`<span class="dtag holiday">長期休暇</span>`:'';
       const ktag=cfg.kahai?`<span class="dtag kahai">加配</span>`:'';
-      inner=`<div class="dnum">${d}</div><div class="badges">${bgs}${more}</div><div class="cell-foot">${stag}${htag}${ktag}</div>`;
+      inner=`<div class="dnum">${d}</div><div class="badges">${evtBgs}${evtMore}${bgs}${more}</div><div class="cell-foot">${stag}${htag}${ktag}</div>`;
       html+=`<div class="${cls}" onclick="openModal('${ds}',${d})">${inner}</div>`;
     } else {
       const dayA=allAvail.filter(a=>a.date===ds);
@@ -452,6 +493,7 @@ function openModal(ds,d){
   document.getElementById('overlay').classList.remove('hidden');
   document.getElementById('mtoast').className='toast';
   updateDayCfgUI();
+  renderModalEvents();
   renderModalShifts();
   setTimeout(()=>document.getElementById('fn').focus(),50);
 }
@@ -480,6 +522,41 @@ async function toggleCfg(field){
   else{await db.from(T_CFG).insert([{date:selDate,[field]:newVal}]);}
   await loadAll();
   updateDayCfgUI();
+}
+
+/* ---- イベント ---- */
+function renderModalEvents(){
+  const evts=allEvents.filter(e=>e.date===selDate);
+  const el=document.getElementById('mevtlist');
+  if(!evts.length){el.innerHTML='';return;}
+  el.innerHTML=evts.map(e=>`
+    <div class="eitem">
+      <div class="einfo">
+        <span class="etitle"><i class="ti ti-sparkles"></i> ${esc(e.title)}</span>
+        ${e.start_time?`<span class="etime">${e.start_time.slice(0,5)}${e.end_time?' 〜 '+e.end_time.slice(0,5):''}</span>`:''}
+        ${e.note?`<span class="enote">${esc(e.note)}</span>`:''}
+      </div>
+      <button class="delbtn" onclick="deleteEvent(${e.id})"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
+
+function fillEvt(name){document.getElementById('et').value=name;document.getElementById('et').focus();}
+
+async function addEvent(){
+  const title=document.getElementById('et').value.trim();
+  if(!title){document.getElementById('et').focus();return;}
+  const start=document.getElementById('es').value;
+  const end=document.getElementById('ee').value;
+  const{error}=await db.from(T_EVENTS).insert([{date:selDate,title,start_time:start?start+':00':null,end_time:end?end+':00':null}]);
+  if(error){alert('エラー: '+error.message);return;}
+  document.getElementById('et').value='';
+  await loadAll();renderModalEvents();
+}
+
+async function deleteEvent(id){
+  if(!confirm('このイベントを削除しますか？'))return;
+  await db.from(T_EVENTS).delete().eq('id',id);
+  await loadAll();renderModalEvents();
 }
 
 function renderModalShifts(){
@@ -537,10 +614,12 @@ db.channel('rt-all')
   .on('postgres_changes',{event:'*',schema:'public',table:T_SHIFTS},async()=>{await loadAll();if(selDate)renderModalShifts();})
   .on('postgres_changes',{event:'*',schema:'public',table:T_AVAIL},()=>loadAll())
   .on('postgres_changes',{event:'*',schema:'public',table:T_CFG},()=>loadAll())
+  .on('postgres_changes',{event:'*',schema:'public',table:T_EVENTS},async()=>{await loadAll();if(selDate)renderModalEvents();})
   .subscribe();
 
 buildSel('fs','13:00');buildSel('fe','19:30');
 buildSel('my-start','13:00');buildSel('my-end','19:30');
+buildSel('es','14:00');buildSel('ee','15:00');
 loadAll();
 </script>
 </body>
